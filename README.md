@@ -10,11 +10,13 @@ Dependencies
  - compass
  - browserify
 
-to build:
+Build
+---
 ```bash
 	run $ gulp
 ```
-to deploy:
+Deploy
+---
 ```bash
 	run $ gulp and push the /public/Inserts/SiteHeader.html to Pageflex FTP
 ```
