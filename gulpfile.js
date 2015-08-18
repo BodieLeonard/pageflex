@@ -8,7 +8,8 @@ var gulp = require('gulp')
     ,minifyHTML = require('gulp-minify-html')
     ,minifyCSS = require('gulp-minify-css')
     ,inject = require('gulp-inject')
-    ,del = require('del');
+    ,del = require('del')
+    ,browserify = require('gulp-browserify');
 
 // Lint Task
 gulp.task('lint', function() {
@@ -38,9 +39,13 @@ gulp.task('templates', function() {
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
     return gulp.src('./src/js/*.js')
-        .pipe(concat('all.js'))
+        
         //.pipe(gulp.dest('./dist/'))
         //.pipe(rename('all.js'))
+        .pipe(browserify({
+          insertGlobals: true
+        }))
+        .pipe(concat('all.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./dist/'));
 });
