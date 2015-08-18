@@ -18,5 +18,6 @@ Build
 Deploy
 ---
 ```bash
-	run $ gulp and push the /public/Inserts/SiteHeader.html to Pageflex FTP
+	run $ gulp 
 ```
+ - push fils to PageFlex FTP
