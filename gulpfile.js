@@ -42,18 +42,17 @@ gulp.task('scripts', function() {
         
         //.pipe(gulp.dest('./dist/'))
         //.pipe(rename('all.js'))
-        .pipe(browserify({
-          insertGlobals: true
-        }))
-        .pipe(concat('all.js'))
-        .pipe(uglify())
+        
+        //.pipe(concat('all.js'))
+        .pipe(browserify())
+        //.pipe(uglify())
         .pipe(gulp.dest('./dist/'));
 });
 
 // Concatenate & Minify JS
 gulp.task('libs', function() {
     return gulp.src('./src/libs/*.js')
-        .pipe(concat('libs.js'))
+        .pipe(concat('_libs.js'))
         .pipe(gulp.dest('./dist/'));
 });
 
@@ -72,7 +71,7 @@ gulp.task('clean', function (cb) {
 });
 
 // Inject file content into SiteHeader.html
-gulp.task('inject', /*['clean'],*/ function() {
+gulp.task('inject', ['scripts', 'templates'],/*['clean'],*/ function() {
 
     return gulp.src('./src/SiteHeader.html')
     .pipe(inject(gulp.src(['./dist/*.html']), {
@@ -81,6 +80,12 @@ gulp.task('inject', /*['clean'],*/ function() {
         return file.contents.toString('utf8')
       }
     }))
+    /*.pipe(inject(gulp.src(['./dist/libs.js']), {
+      starttag: '<!-- inject:libs:js -->',
+      transform: function (filePath, file) {
+        return '<script>'+file.contents.toString('utf8')+'</script>'
+      }
+    }))*/
     .pipe(inject(gulp.src(['./dist/*.js']), {
       starttag: '<!-- inject:head:js -->',
       transform: function (filePath, file) {
@@ -97,4 +102,4 @@ gulp.task('inject', /*['clean'],*/ function() {
 });
 
 // Default Task
-gulp.task('default', ['lint', 'sass', 'scripts', 'watch', 'templates', 'inject']);
+gulp.task('default', ['lint', 'sass', 'inject', 'watch']);
