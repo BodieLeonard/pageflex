@@ -1,24 +1,21 @@
-var $ = require('jquery'), 
-	init = require('./init'),
-	setupLayout = require('./setupLayout');
+var init = require('./init'),
+	setupLayout = require('./setupLayout'),
+	domready = require('domready');
 
 
-(function ($) {
-	
-
-	
-
+domready(function () {
 	var Flex = window.Flex = {};
+	init(Flex);
+	setupLayout(Flex);
+});
 
-	$(function() {
-		/*if(document.form !== undefined){
-			if(document.form.TimeZoneOffset !== undefined){
-				document.form.TimeZoneOffset.value = document.form.TimeZoneOffset.value;
-			}
-		}*/
 
-		init(Flex);
-		setupLayout(Flex);
-	});
 
-})($);
+/*	
+if(document.form !== undefined){
+	if(document.form.TimeZoneOffset !== undefined){
+		document.form.TimeZoneOffset.value = document.form.TimeZoneOffset.value;
+	}
+}
+*/
+	
