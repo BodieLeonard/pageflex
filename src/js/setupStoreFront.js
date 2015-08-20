@@ -19,14 +19,11 @@ var setupStoreFront = function(){
 	var catalogTemplate = $('#catalogTemplate').html();
 	var catalogView = Mustache.render(catalogTemplate, Flex.store);
 
-
 	wrapper.prepend(container);
 	wrapper.prepend(menuView);
-
 	wrapper.append(loginModal());
 
 	$(">.container-fluid", wrapper).append(containerRow);
-
 	$(">.container-fluid >.row", wrapper).append(submenuView);
 	$(">.container-fluid >.row", wrapper).append(catalogView);
 
