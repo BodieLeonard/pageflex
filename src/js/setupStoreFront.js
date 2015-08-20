@@ -4,7 +4,8 @@ var $ = require('jquery'),
 	Mustache = require('mustache'),
 	loginModal = require('./getLoginModal');
 
-var setupLayout = function(){
+var setupStoreFront = function(){
+
 	var wrapper = $('.wrapper');
 	var container = "<div class='container-fluid'/>";
 	var containerRow = $("<div class='row'/>");
@@ -22,7 +23,6 @@ var setupLayout = function(){
 	wrapper.prepend(container);
 	wrapper.prepend(menuView);
 
-	debugger;
 	wrapper.append(loginModal());
 
 	$(">.container-fluid", wrapper).append(containerRow);
@@ -33,4 +33,4 @@ var setupLayout = function(){
 };
 
 
-module.exports = setupLayout;
+module.exports = setupStoreFront;
