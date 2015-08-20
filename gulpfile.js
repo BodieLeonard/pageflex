@@ -1,105 +1,95 @@
 // Include gulp
 var gulp = require('gulp')
-    ,jshint = require('gulp-jshint')
-    ,sass = require('gulp-sass')
-    ,concat = require('gulp-concat')
-    ,uglify = require('gulp-uglify')
-    ,rename = require('gulp-rename')
-    ,minifyHTML = require('gulp-minify-html')
-    ,minifyCSS = require('gulp-minify-css')
-    ,inject = require('gulp-inject')
-    ,del = require('del')
-    ,browserify = require('gulp-browserify');
+  ,jshint = require('gulp-jshint')
+  ,sass = require('gulp-sass')
+  ,concat = require('gulp-concat')
+  ,uglify = require('gulp-uglify')
+  ,rename = require('gulp-rename')
+  ,minifyHTML = require('gulp-minify-html')
+  ,minifyCSS = require('gulp-minify-css')
+  ,inject = require('gulp-inject')
+  ,del = require('del')
+  ,transform = require('vinyl-transform')
+  ,shell = require('gulp-shell')
+  ,gutil = require( 'gulp-util' )
+  ,ftp = require( 'vinyl-ftp' );
 
-// Lint Task
-gulp.task('lint', function() {
-    return gulp.src('./src/js/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+gulp.task( 'deploy', ['clean'], function () {
+
+    var conn = ftp.create( {
+        host:     '69.147.186.59',
+        user:     'credera',
+        password: 'Welcome1!',
+        parallel: 10,
+        log:      gutil.log
+    } );
+    return gulp.src( '../Inserts/SiteHeader.html', { base: '.', buffer: false } )
+        .pipe( conn.newer( '' ) ) // only upload newer files
+        .pipe( conn.dest( '' ) );
+
+} );
+
+gulp.task('lint', ['sass', 'inject'], function() {
+  return gulp.src('./src/js/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
-
-// Compile Our Sass
 gulp.task('sass', function() {
-    return gulp.src('./src/scss/*.scss')
-        .pipe(sass())
-        .pipe(minifyCSS())
-        .pipe(gulp.dest('./dist/'));
+  return gulp.src('./src/scss/*.scss')
+    .pipe(sass())
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('./temp/'));
 });
-
-// Concatenate & Minify Templates
 gulp.task('templates', function() {
-    return gulp.src('./src/templates/*.html')
-        .pipe(concat('templates.html'))
-        //.pipe(gulp.dest('./dist/'))
-        //.pipe(rename('all.html'))
-        .pipe(minifyHTML())
-        .pipe(gulp.dest('./dist/'));
+  return gulp.src('./src/templates/*.html')
+    .pipe(concat('templates.html'))
+    .pipe(minifyHTML())
+    .pipe(gulp.dest('./temp/'));
 });
 
-// Concatenate & Minify JS
-gulp.task('scripts', function() {
-    return gulp.src('./src/js/*.js')
-        
-        //.pipe(gulp.dest('./dist/'))
-        //.pipe(rename('all.js'))
-        
-        //.pipe(concat('all.js'))
-        .pipe(browserify())
-        //.pipe(uglify())
-        .pipe(gulp.dest('./dist/'));
+gulp.task('browserify', ['templates'], shell.task([
+  'browserify ./src/js/*.js > ./temp/bundle.js'
+]))
+
+gulp.task('scripts', ['browserify'], function() {
+  return gulp.src('./temp/bundle.js')
+    .pipe(concat('app.min.js'))
+    //.pipe(uglify())
+    .pipe(gulp.dest('./temp/'));
 });
 
-// Concatenate & Minify JS
-gulp.task('libs', function() {
-    return gulp.src('./src/libs/*.js')
-        .pipe(concat('_libs.js'))
-        .pipe(gulp.dest('./dist/'));
-});
-
-// Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('./src/js/*.js', ['lint', 'scripts']);
-    gulp.watch('./src/scss/*.scss', ['sass']);
-    gulp.watch('./src/templates/*.html', ['templates']);
+  gulp.watch('./src/js/*.js', ['lint', 'scripts']);
+  gulp.watch('./src/scss/*.scss', ['sass']);
+  gulp.watch('./src/templates/*.html', ['templates']);
 });
 
-// clean
-gulp.task('clean', function (cb) {
-  del([
-    '../public/Inserts/SiteHeader.html',
-  ], cb);
+gulp.task('clean', ['lint'], function (cb) {
+  del(['./temp/'], cb);
 });
 
 // Inject file content into SiteHeader.html
-gulp.task('inject', ['scripts', 'templates'],/*['clean'],*/ function() {
-
-    return gulp.src('./src/SiteHeader.html')
-    .pipe(inject(gulp.src(['./dist/*.html']), {
-      starttag: '<!-- inject:head:html -->',
-      transform: function (filePath, file) {
-        return file.contents.toString('utf8')
-      }
-    }))
-    /*.pipe(inject(gulp.src(['./dist/libs.js']), {
-      starttag: '<!-- inject:libs:js -->',
-      transform: function (filePath, file) {
-        return '<script>'+file.contents.toString('utf8')+'</script>'
-      }
-    }))*/
-    .pipe(inject(gulp.src(['./dist/*.js']), {
-      starttag: '<!-- inject:head:js -->',
-      transform: function (filePath, file) {
-        return '<script>'+file.contents.toString('utf8')+'</script>'
-      }
-    }))
-    .pipe(inject(gulp.src(['./dist/*.css']), {
-      starttag: '<!-- inject:head:css -->',
-      transform: function (filePath, file) {
-        return '<style>'+file.contents.toString('utf8')+'</style>'
-      }
-    }))
-    .pipe(gulp.dest('../public/Inserts/'));
+gulp.task('inject', ['scripts'], function() {
+  return gulp.src('./src/SiteHeader.html')
+  .pipe(inject(gulp.src(['./temp/*.html']), {
+    starttag: '<!-- inject:head:html -->',
+    transform: function (filePath, file) {
+      return file.contents.toString('utf8')
+    }
+  }))
+  .pipe(inject(gulp.src(['./temp/app.min.js']), {
+    starttag: '<!-- inject:head:js -->',
+    transform: function (filePath, file) {
+      return '<script>'+file.contents.toString('utf8')+'</script>'
+    }
+  }))
+  .pipe(inject(gulp.src(['./temp/*.css']), {
+    starttag: '<!-- inject:head:css -->',
+    transform: function (filePath, file) {
+      return '<style>'+file.contents.toString('utf8')+'</style>'
+    }
+  }))
+  .pipe(gulp.dest('../Inserts/'));
 });
 
-// Default Task
-gulp.task('default', ['lint', 'sass', 'inject', 'watch']);
+gulp.task('default', ['deploy']);

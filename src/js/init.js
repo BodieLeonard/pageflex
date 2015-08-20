@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery'),
 	getSiteHeader = require('./getSiteHeader'),
 	getNavBar = require('./getNavBar'),
@@ -5,7 +7,7 @@ var $ = require('jquery'),
 	getCatalogItems = require('./getCatalogItems'),
 	getCategories = require('./getCategories');
 
-var init = function (Flex){
+var init = function (){
 	$.extend( Flex, {
 		config: {
 			DEBUG: true,

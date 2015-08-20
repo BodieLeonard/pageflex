@@ -1,15 +1,19 @@
+'use strict';
 var $ = require('jquery');
 
-module.exports = function(){
-	var navbar = $('.navBar .navBarButton'),
+var getNavBar = function(){
+	var navbar = $('.navBar .navBarLeft .navBarCell'),
 		items = navbar.map(function() {
 
-		var item = $(this).find('.navBarButton'),
+		var item = $(this).find('a'),
 		obj = {
 	  		text: $(item).text(),
 	  		id: $(item).attr('id'),
 	  		href: $(item).attr('href'),
-	  		class: $(item).attr('class') 
+	  		class: $(item).attr('class'),
+	  	};
+	  	if(item.attr("onClick") !== undefined){
+	  		obj.events= item.attr("onClick");
 	  	};
 	  	return obj;
 
@@ -17,3 +21,4 @@ module.exports = function(){
 
 	return items;
 };
+module.exports = getNavBar;

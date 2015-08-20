@@ -1,12 +1,18 @@
-var init = require('./init'),
+'use strict';
+
+var $ = require('jquery'),
+	_ = require('lodash'),
+	bootstrap = require('bootstrap'),
+	init = require('./init'),
 	setupLayout = require('./setupLayout'),
-	domready = require('domready');
+	domready = require('domready'),
+	Mustache = require('mustache');
 
 
-domready(function () {
+domready(function ($) {
 	var Flex = window.Flex = {};
-	init(Flex);
-	setupLayout(Flex);
+	init();
+	setupLayout();
 });
 
 

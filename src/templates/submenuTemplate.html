@@ -1,0 +1,16 @@
+<script id="submenuTemplate" type="text/html">
+<div class="col-sm-3 col-md-2 sidebar">
+	<ul class="nav nav-sidebar">
+		{{#categories}}
+		<li class="{{active}}"> <a href="{{url}}"> {{title}} </a> </li>
+			{{#subCategorys.length}}
+			<ul>
+				{{#subCategorys}}
+				<li><a href="{{url}}"> {{title}} </a> </li>
+				{{/subCategorys}}
+			</ul>
+			{{/subCategorys.length}}
+		{{/categories}}
+	</ul>
+</div>
+</script>

@@ -1,6 +1,8 @@
+'use strict';
+
 var $ = require('jquery');
 
-module.exports = function(){
+var getCatalogItems = function(){
 	var catalogItem = $('div.catalogItemOuter'),
 	items = catalogItem.map(function() {
 		var item = $(this).find('.catalogThumbnailArea'),
@@ -17,3 +19,5 @@ module.exports = function(){
 
 	return items;
 };
+
+module.exports = getCatalogItems;

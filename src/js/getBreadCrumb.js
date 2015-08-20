@@ -1,6 +1,8 @@
+'use strict';
+
 var $ = require('jquery');
 
-module.exports = function (){
+var getBreadCrumb = function (){
 	var crumbs = $('.categoryPath a'),
 	items = crumbs.map(function() {
 		var obj = {
@@ -14,3 +16,5 @@ module.exports = function (){
 	}).get();
 	return items;
 };
+
+module.exports = getBreadCrumb;

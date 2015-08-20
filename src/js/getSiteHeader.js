@@ -1,6 +1,7 @@
+'use strict';
 var $ = require('jquery');
 
-module.exports = function (){
+var getSiteHeader = function (){
 	var siteHeader = $('#siteHeader'),
 	obj = {
 		url: siteHeader.children('a').attr('href'),
@@ -10,3 +11,5 @@ module.exports = function (){
 	};
 	return obj;
 };
+
+module.exports = getSiteHeader;
