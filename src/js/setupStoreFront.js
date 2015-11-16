@@ -21,13 +21,14 @@ var setupStoreFront = function(){
 
 	wrapper.prepend(container);
 	wrapper.prepend(menuView);
-	wrapper.append(loginModal());
+	wrapper.append(loginModal());	
+
+	debugger;
 
 	$(">.container-fluid", wrapper).append(containerRow);
 	$(">.container-fluid >.row", wrapper).append(submenuView);
 	$(">.container-fluid >.row", wrapper).append(catalogView);
 
 };
-
 
 module.exports = setupStoreFront;
